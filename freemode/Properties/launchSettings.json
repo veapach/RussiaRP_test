@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "freemode": {
+      "commandName": "Executable",
+      "executablePath": "X:\\RAGEMP\\server-files\\ragemp-server.exe",
+      "workingDirectory": "X:\\RAGEMP\\server-files"
+    }
+  }
+}
