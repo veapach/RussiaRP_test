@@ -45,5 +45,46 @@ namespace freemode
             NAPI.Player.SetPlayerArmor(player, 100);
         }
 
+        [Command("login", "/login [пароль]", Alias = "l")]
+        private void cmd_login(Player player, string password)
+        {
+            if (Accounts.IsPlayerLoggedIn(player))
+            {
+                player.SendNotification("~r~Вы уже авторизованы!");
+                return;
+            }
+            if (!mysql.IsAccountExist(player.Name))
+            {
+                player.SendNotification("~r~Вы не зарегистрированы!");
+                return;
+            }
+            if (!mysql.IsValidPassword(player.Name, password))
+            {
+                player.SendNotification("~r~Пароль неверный!");
+                return;
+            }
+            Accounts account = new Accounts(player.Name, player);
+            account.Login(player, false);
+            NAPI.ClientEvent.TriggerClientEvent(player, "PlayerFreeze", false);
+        }
+
+        [Command("register", "/register [пароль]", Alias = "reg")]
+        private void cmd_register(Player player, string password)
+        {
+            if (Accounts.IsPlayerLoggedIn(player))
+            {
+                player.SendNotification("~r~Вы уже авторизованы!");
+                return;
+            }
+            if (mysql.IsAccountExist(player.Name))
+            {
+                player.SendNotification("~r~Вы уже зарегистрированы!");
+                return;
+            }
+
+            Accounts account = new Accounts(player.Name, player);
+            account.Register(player.Name, password);
+            NAPI.ClientEvent.TriggerClientEvent(player, "PlayerFreeze", false);
+        }
     }
 }

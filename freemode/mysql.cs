@@ -74,7 +74,7 @@ namespace freemode
                 command.Parameters.AddWithValue("@name", account._name);
                 command.Parameters.AddWithValue("@cash", account._cash);
 
-                command.ExecuteReader();
+                command.ExecuteNonQuery();
 
                 account._id = (int)command.LastInsertedId;
             }

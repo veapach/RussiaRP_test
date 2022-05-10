@@ -24,6 +24,7 @@ namespace freemode
             {
                 player.SendChatMessage("~w~Ваш аккаунт ~r~не зарегистрирован ~w~на сервере. Используйте /register для регистрации.");
             }
+            NAPI.ClientEvent.TriggerClientEvent(player, "PlayerFreeze", true);
 
         }
 
