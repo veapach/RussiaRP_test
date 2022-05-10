@@ -86,5 +86,16 @@ namespace freemode
             account.Register(player.Name, password);
             NAPI.ClientEvent.TriggerClientEvent(player, "PlayerFreeze", false);
         }
+        [Command("help", "/help - список команд", Alias = "commands")]
+        private void cmd_help(Player player)
+        {
+            player.SendChatMessage("~g~--------СПИСОК КОМАНД-------");
+            player.SendChatMessage(">    /spawn_car - спавнит авто");
+            player.SendChatMessage(">    /freeze - замораживает игрока");
+            player.SendChatMessage(">    /gun - выдает оружие игроку");
+            player.SendChatMessage(">    /heal - восстанавливает хп игроку");
+            player.SendChatMessage(">    /armor - восстанавливает броню игроку");
+            player.SendChatMessage("~g~-----------------------------");
+        }
     }
 }
