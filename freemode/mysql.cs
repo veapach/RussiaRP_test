@@ -98,6 +98,7 @@ namespace freemode
                     reader.Read();
                     account._id = reader.GetInt32("id");
                     account._cash = reader.GetInt32("cash");
+                    account._adminlevel = reader.GetInt32("adminlevel");
                 }
             }
         }
