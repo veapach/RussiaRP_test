@@ -14,6 +14,9 @@ namespace freemode
         [ServerEvent(Event.PlayerConnected)]
         private void OnPlayerConnected(Player player)
         {
+            if (Utils.players.Contains(player)) Utils.players.Remove(player);
+            Utils.players.Add(player);
+
             player.SendChatMessage("~g~Добро пожаловать на сервер ~w~Rus~b~sia ~r~RP!");
 
             if (mysql.IsAccountExist(player.Name))

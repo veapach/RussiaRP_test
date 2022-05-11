@@ -8,7 +8,7 @@ namespace freemode
     {
 
         [Command("spawn_car", "/spawn_car [Хэш авто] [Осн. цвет] [Доп. цвет]", Alias = "scar")]
-        private void cmd_car(Player player, string carname, int color1, int color2)
+        private void cmd_car(Player player, string carname, int color1 = 1, int color2 = 1)
         {
             Accounts account = player.GetData<Accounts>(Accounts._accountKey);
             if (!account.IsPlayerHasAdminLevel((int)Accounts.AdminRanks.Helper))
@@ -156,15 +156,26 @@ namespace freemode
             NAPI.Player.SetPlayerHealth(player, 0);
         }
 
-        /*
-        
-        СДЕЛАТЬ ТП НА waypoint!!!!!
-        [Command("tp")]
-        private void cmd_teleport(Player player)
+        [Command("tp", "/tp [x] [y] [z]", Alias = "teleport")]
+        private void cmd_tp(Player player, float xPos, float yPos, float zPos)
         {
-            NAPI.Entity.SetEntityPosition(player, new Vector3(NAPI.Blip.GetBlipPosition(player).x, NAPI.Blip.GetBlipPosition(player).y, NAPI.Blip.GetBlipPosition(player).z));
+            try
+            {
+                Accounts account = player.GetData<Accounts>(Accounts._accountKey);
+                if (!account.IsPlayerHasAdminLevel((int)Accounts.AdminRanks.Moderator))
+                {
+                    player.SendNotification("~r~У вас недостаточно прав для этой команды!");
+                    return;
+                }
+
+                player.Position = new Vector3(xPos, yPos, zPos);
+                player.SendChatMessage($"~r~ Вы были телепортированы на координаты {xPos}, {yPos}, {zPos}!");
+
+            }
+            catch{
+
+            }
         }
-        */
 
         [Command("weather", "/weather [id погоды]", Alias = "wthr")]
         private void cmd_weather(Player player, byte weatherId)
@@ -264,5 +275,53 @@ namespace freemode
             NAPI.World.SetTime(hours, minutes, 0);
             NAPI.Chat.SendChatMessageToAll($"~r~установлено время {hours}:{minutes}");
         }
+
+        [Command("kick", "/kick [id] [причина]", GreedyArg = true)]
+        private void cmd_kick(Player player, string argstring)
+        {
+            try
+            {
+                Accounts account = player.GetData<Accounts>(Accounts._accountKey);
+                if (!account.IsPlayerHasAdminLevel((int)Accounts.AdminRanks.Moderator))
+                {
+                    player.SendNotification("~r~У вас недостаточно прав для этой команды!");
+                    return;
+                }
+                string[] kickArgs = argstring.Split(' ', 2);
+                int id;
+
+                if (String.IsNullOrEmpty(kickArgs[1]))
+                {
+                    player.SendChatMessage("~r~/kick [id] [причина]");
+                    return;
+                }
+
+                if (!Int32.TryParse(kickArgs[0], out id))
+                {
+                    player.SendChatMessage("~r~/kick [id] [причина]");
+                    return;
+                }
+
+                Player target = Utils.GetPlayerObject(id);
+
+                if (target == null)
+                {
+                    player.SendNotification("~r~Игрок не подключен!");
+                    return;
+                }          
+
+                string kickMsg = $"~o~Администратор {player.Name}[{player.Id}] кикнул игрока {target.Name}[{target.Id}]. Причина: {kickArgs[1]}";
+                NAPI.Chat.SendChatMessageToAll(kickMsg);
+
+                target.Kick();
+                NAPI.Util.ConsoleOutput(kickMsg);
+
+
+            }
+            catch{
+
+            }
+        }
+
     }
 }
